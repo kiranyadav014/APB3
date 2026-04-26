@@ -16,41 +16,7 @@ class fifo_monitor extends uvm_monitor;
       `uvm_fatal("NOVIF", "Virtual interface not found")
   endfunction
   
-  task run_phase(uvm_run_phase phase);
-    forever begin
-      fifo_transaction txn;
-      txn = fifo_transaction::type_id::create("txn");
-      
-      @(vif.mon_cb);
-      
-      txn.write_en = vif.mon_cb.write_en;
-      txn.read_en = vif.mon_cb.read_en;
-      txn.data_in = vif.mon_cb.data_in;
-      txn.data_out = vif.mon_cb.data_out;
-      txn.fifo_full = vif.mon_cb.fifo_full;
-      txn.fifo_empty = vif.mon_cb.fifo_empty;
-      
-      // Monitor assertions
-      if (txn.fifo_full && txn.fifo_empty) begin
-        `uvm_error("MONITOR", "Monitor detected FIFO both full and empty")
-      end
-      
-      if (txn.write_en && txn.fifo_full) begin
-        `uvm_error("MONITOR", "Monitor detected write when FIFO is full")
-      end
-      
-      if (txn.read_en && txn.fifo_empty) begin
-        `uvm_error("MONITOR", "Monitor detected read when FIFO is empty")
-      end
-      
-      if (txn.write_en && txn.read_en) begin
-        `uvm_error("MONITOR", "Monitor detected simultaneous read and write")
-      end
-      
-      `uvm_info("MONITOR", $sformatf("Monitored transaction: %s", txn.convert2string()), UVM_HIGH)
-      ap.write(txn);
-    end
-  endtask
+  extern task run_phase(uvm_run_phase phase);
 
   function void end_of_elaboration_phase(uvm_end_of_elaboration_phase phase);
     super.end_of_elaboration_phase(phase);
@@ -83,3 +49,40 @@ class fifo_monitor extends uvm_monitor;
   endfunction
   
 endclass
+
+// Extern task implementation
+task fifo_monitor::run_phase(uvm_run_phase phase);
+  forever begin
+    fifo_transaction txn;
+    txn = fifo_transaction::type_id::create("txn");
+    
+    @(vif.mon_cb);
+    
+    txn.write_en = vif.mon_cb.write_en;
+    txn.read_en = vif.mon_cb.read_en;
+    txn.data_in = vif.mon_cb.data_in;
+    txn.data_out = vif.mon_cb.data_out;
+    txn.fifo_full = vif.mon_cb.fifo_full;
+    txn.fifo_empty = vif.mon_cb.fifo_empty;
+    
+    // Monitor assertions
+    if (txn.fifo_full && txn.fifo_empty) begin
+      `uvm_error("MONITOR", "Monitor detected FIFO both full and empty")
+    end
+    
+    if (txn.write_en && txn.fifo_full) begin
+      `uvm_error("MONITOR", "Monitor detected write when FIFO is full")
+    end
+    
+    if (txn.read_en && txn.fifo_empty) begin
+      `uvm_error("MONITOR", "Monitor detected read when FIFO is empty")
+    end
+    
+    if (txn.write_en && txn.read_en) begin
+      `uvm_error("MONITOR", "Monitor detected simultaneous read and write")
+    end
+    
+    `uvm_info("MONITOR", $sformatf("Monitored transaction: %s", txn.convert2string()), UVM_HIGH)
+    ap.write(txn);
+  end
+endtask

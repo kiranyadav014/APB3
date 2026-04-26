@@ -8,18 +8,21 @@ class base_sequence extends uvm_sequence #(fifo_transaction);
     super.new(name);
   endfunction
   
-  task body();
-    fifo_transaction txn;
-    
-    repeat(num_transactions) begin
-      txn = fifo_transaction::type_id::create("txn");
-      start_item(txn);
-      assert(txn.randomize());
-      finish_item(txn);
-    end
-  endtask
+  extern task body();
   
 endclass
+
+// Extern task implementation
+task base_sequence::body();
+  fifo_transaction txn;
+  
+  repeat(num_transactions) begin
+    txn = fifo_transaction::type_id::create("txn");
+    start_item(txn);
+    assert(txn.randomize());
+    finish_item(txn);
+  end
+endtask
 
 // Write-only sequence
 class write_sequence extends uvm_sequence #(fifo_transaction);
@@ -31,18 +34,21 @@ class write_sequence extends uvm_sequence #(fifo_transaction);
     super.new(name);
   endfunction
   
-  task body();
-    fifo_transaction txn;
-    
-    repeat(num_transactions) begin
-      txn = fifo_transaction::type_id::create("txn");
-      start_item(txn);
-      assert(txn.randomize() with {write_en == 1; read_en == 0;});
-      finish_item(txn);
-    end
-  endtask
+  extern task body();
   
 endclass
+
+// Extern task implementation
+task write_sequence::body();
+  fifo_transaction txn;
+  
+  repeat(num_transactions) begin
+    txn = fifo_transaction::type_id::create("txn");
+    start_item(txn);
+    assert(txn.randomize() with {write_en == 1; read_en == 0;});
+    finish_item(txn);
+  end
+endtask
 
 // Read-only sequence
 class read_sequence extends uvm_sequence #(fifo_transaction);
@@ -54,18 +60,21 @@ class read_sequence extends uvm_sequence #(fifo_transaction);
     super.new(name);
   endfunction
   
-  task body();
-    fifo_transaction txn;
-    
-    repeat(num_transactions) begin
-      txn = fifo_transaction::type_id::create("txn");
-      start_item(txn);
-      assert(txn.randomize() with {write_en == 0; read_en == 1;});
-      finish_item(txn);
-    end
-  endtask
+  extern task body();
   
 endclass
+
+// Extern task implementation
+task read_sequence::body();
+  fifo_transaction txn;
+  
+  repeat(num_transactions) begin
+    txn = fifo_transaction::type_id::create("txn");
+    start_item(txn);
+    assert(txn.randomize() with {write_en == 0; read_en == 1;});
+    finish_item(txn);
+  end
+endtask
 
 // Write then Read sequence
 class write_then_read_sequence extends uvm_sequence #(fifo_transaction);
@@ -75,16 +84,19 @@ class write_then_read_sequence extends uvm_sequence #(fifo_transaction);
     super.new(name);
   endfunction
   
-  task body();
-    fifo_transaction txn;
-    write_sequence ws = write_sequence::type_id::create("ws");
-    read_sequence rs = read_sequence::type_id::create("rs");
-    
-    ws.num_transactions = 4;
-    rs.num_transactions = 4;
-    
-    ws.start(m_sequencer);
-    rs.start(m_sequencer);
-  endtask
+  extern task body();
   
 endclass
+
+// Extern task implementation
+task write_then_read_sequence::body();
+  fifo_transaction txn;
+  write_sequence ws = write_sequence::type_id::create("ws");
+  read_sequence rs = read_sequence::type_id::create("rs");
+  
+  ws.num_transactions = 4;
+  rs.num_transactions = 4;
+  
+  ws.start(m_sequencer);
+  rs.start(m_sequencer);
+endtask

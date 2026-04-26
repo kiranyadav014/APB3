@@ -14,6 +14,8 @@ class fifo_coverage extends uvm_subscriber #(fifo_transaction);
     cov = new("cov");
   endfunction
 
+  extern function void write(fifo_transaction t);
+
   function void end_of_elaboration_phase(uvm_end_of_elaboration_phase phase);
     super.end_of_elaboration_phase(phase);
     `uvm_info("COVERAGE", "fifo_coverage end_of_elaboration_phase", UVM_LOW)
@@ -44,11 +46,6 @@ class fifo_coverage extends uvm_subscriber #(fifo_transaction);
     `uvm_info("COVERAGE", "fifo_coverage final_phase", UVM_LOW)
   endfunction
 
-  function void write(fifo_transaction t);
-    txn = t;
-    cov.sample();
-  endfunction
-
   covergroup fifo_cov;
     write_en_cp : coverpoint txn.write_en {
       bins idle = {0};
@@ -65,3 +62,9 @@ class fifo_coverage extends uvm_subscriber #(fifo_transaction);
   endgroup
 
 endclass
+
+// Extern function implementation
+function void fifo_coverage::write(fifo_transaction t);
+  txn = t;
+  cov.sample();
+endfunction

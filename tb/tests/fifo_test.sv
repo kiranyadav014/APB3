@@ -53,20 +53,22 @@ class random_test extends base_test;
     super.new(name, parent);
   endfunction
   
-  task run_phase(uvm_run_phase phase);
-    base_sequence seq;
-    
-    phase.raise_objection(this);
-    
-    seq = base_sequence::type_id::create("seq");
-    seq.num_transactions = 20;
-    seq.start(env.seqr);
-    
-    #100;
-    phase.drop_objection(this);
-  endtask
+  extern task run_phase(uvm_run_phase phase);
   
 endclass
+
+task random_test::run_phase(uvm_run_phase phase);
+  base_sequence seq;
+  
+  phase.raise_objection(this);
+  
+  seq = base_sequence::type_id::create("seq");
+  seq.num_transactions = 20;
+  seq.start(env.seqr);
+  
+  #100;
+  phase.drop_objection(this);
+endtask
 
 // Write Test
 class write_test extends base_test;
@@ -76,20 +78,22 @@ class write_test extends base_test;
     super.new(name, parent);
   endfunction
   
-  task run_phase(uvm_run_phase phase);
-    write_sequence seq;
-    
-    phase.raise_objection(this);
-    
-    seq = write_sequence::type_id::create("seq");
-    seq.num_transactions = 4;
-    seq.start(env.seqr);
-    
-    #100;
-    phase.drop_objection(this);
-  endtask
+  extern task run_phase(uvm_run_phase phase);
   
 endclass
+
+task write_test::run_phase(uvm_run_phase phase);
+  write_sequence seq;
+  
+  phase.raise_objection(this);
+  
+  seq = write_sequence::type_id::create("seq");
+  seq.num_transactions = 4;
+  seq.start(env.seqr);
+  
+  #100;
+  phase.drop_objection(this);
+endtask
 
 // Read Test
 class read_test extends base_test;
@@ -99,20 +103,22 @@ class read_test extends base_test;
     super.new(name, parent);
   endfunction
   
-  task run_phase(uvm_run_phase phase);
-    read_sequence seq;
-    
-    phase.raise_objection(this);
-    
-    seq = read_sequence::type_id::create("seq");
-    seq.num_transactions = 4;
-    seq.start(env.seqr);
-    
-    #100;
-    phase.drop_objection(this);
-  endtask
+  extern task run_phase(uvm_run_phase phase);
   
 endclass
+
+task read_test::run_phase(uvm_run_phase phase);
+  read_sequence seq;
+  
+  phase.raise_objection(this);
+  
+  seq = read_sequence::type_id::create("seq");
+  seq.num_transactions = 4;
+  seq.start(env.seqr);
+  
+  #100;
+  phase.drop_objection(this);
+endtask
 
 // Write then Read Test
 class write_read_test extends base_test;
@@ -122,19 +128,21 @@ class write_read_test extends base_test;
     super.new(name, parent);
   endfunction
   
-  task run_phase(uvm_run_phase phase);
-    write_then_read_sequence seq;
-    
-    phase.raise_objection(this);
-    
-    seq = write_then_read_sequence::type_id::create("seq");
-    seq.start(env.seqr);
-    
-    #100;
-    phase.drop_objection(this);
-  endtask
+  extern task run_phase(uvm_run_phase phase);
   
 endclass
+
+task write_read_test::run_phase(uvm_run_phase phase);
+  write_then_read_sequence seq;
+  
+  phase.raise_objection(this);
+  
+  seq = write_then_read_sequence::type_id::create("seq");
+  seq.start(env.seqr);
+  
+  #100;
+  phase.drop_objection(this);
+endtask
 
 // Full FIFO Test
 class full_fifo_test extends base_test;
@@ -144,33 +152,35 @@ class full_fifo_test extends base_test;
     super.new(name, parent);
   endfunction
   
-  task run_phase(uvm_run_phase phase);
-    write_sequence seq;
-    fifo_transaction txn;
-    
-    phase.raise_objection(this);
-    
-    // Fill the FIFO completely
-    seq = write_sequence::type_id::create("seq");
-    seq.num_transactions = 4;
-    seq.start(env.seqr);
-    
-    // Try to write when full
-    repeat(5) begin
-      txn = fifo_transaction::type_id::create("txn");
-      $cast(env.seqr.sequencer_state, UVM_IDLE);
-      begin
-        env.seqr.get_next_item(txn);
-        txn.randomize() with {write_en == 1; read_en == 0;};
-        env.seqr.item_done();
-      end
-    end
-    
-    #100;
-    phase.drop_objection(this);
-  endtask
+  extern task run_phase(uvm_run_phase phase);
   
 endclass
+
+task full_fifo_test::run_phase(uvm_run_phase phase);
+  write_sequence seq;
+  fifo_transaction txn;
+  
+  phase.raise_objection(this);
+  
+  // Fill the FIFO completely
+  seq = write_sequence::type_id::create("seq");
+  seq.num_transactions = 4;
+  seq.start(env.seqr);
+  
+  // Try to write when full
+  repeat(5) begin
+    txn = fifo_transaction::type_id::create("txn");
+    $cast(env.seqr.sequencer_state, UVM_IDLE);
+    begin
+      env.seqr.get_next_item(txn);
+      txn.randomize() with {write_en == 1; read_en == 0;};
+      env.seqr.item_done();
+    end
+  end
+  
+  #100;
+  phase.drop_objection(this);
+endtask
 
 // Empty FIFO Test
 class empty_fifo_test extends base_test;
@@ -180,18 +190,20 @@ class empty_fifo_test extends base_test;
     super.new(name, parent);
   endfunction
   
-  task run_phase(uvm_run_phase phase);
-    read_sequence seq;
-    
-    phase.raise_objection(this);
-    
-    // Try to read from empty FIFO
-    seq = read_sequence::type_id::create("seq");
-    seq.num_transactions = 5;
-    seq.start(env.seqr);
-    
-    #100;
-    phase.drop_objection(this);
-  endtask
+  extern task run_phase(uvm_run_phase phase);
   
 endclass
+
+task empty_fifo_test::run_phase(uvm_run_phase phase);
+  read_sequence seq;
+  
+  phase.raise_objection(this);
+  
+  // Try to read from empty FIFO
+  seq = read_sequence::type_id::create("seq");
+  seq.num_transactions = 5;
+  seq.start(env.seqr);
+  
+  #100;
+  phase.drop_objection(this);
+endtask

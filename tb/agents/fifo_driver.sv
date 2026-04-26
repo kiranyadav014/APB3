@@ -14,16 +14,9 @@ class fifo_driver extends uvm_driver #(fifo_transaction);
       `uvm_fatal("NOVIF", "Virtual interface not found")
   endfunction
   
-  task run_phase(uvm_run_phase phase);
-    reset();
-    
-    forever begin
-      fifo_transaction txn;
-      seq_item_port.get_next_item(txn);
-      drive(txn);
-      seq_item_port.item_done();
-    end
-  endtask
+  extern task run_phase(uvm_run_phase phase);
+  extern task reset();
+  extern task drive(fifo_transaction txn);
 
   function void end_of_elaboration_phase(uvm_end_of_elaboration_phase phase);
     super.end_of_elaboration_phase(phase);
@@ -54,42 +47,54 @@ class fifo_driver extends uvm_driver #(fifo_transaction);
     super.final_phase(phase);
     `uvm_info("DRIVER", "fifo_driver final_phase", UVM_LOW)
   endfunction
-
-  task reset();
-    `uvm_info("DRIVER", "Resetting FIFO...", UVM_MEDIUM)
-    vif.drv_cb.rst <= 1;
-    vif.drv_cb.write_en <= 0;
-    vif.drv_cb.read_en <= 0;
-    vif.drv_cb.data_in <= 0;
-    repeat(2) @(vif.drv_cb);
-    vif.drv_cb.rst <= 0;
-    @(vif.drv_cb);
-  endtask
-  
-  task drive(fifo_transaction txn);
-    vif.drv_cb.write_en <= txn.write_en;
-    vif.drv_cb.read_en <= txn.read_en;
-    vif.drv_cb.data_in <= txn.data_in;
-    
-    @(vif.drv_cb);
-    
-    txn.fifo_full = vif.drv_cb.fifo_full;
-    txn.fifo_empty = vif.drv_cb.fifo_empty;
-    
-    // Driver assertions
-    if (txn.write_en && txn.read_en) begin
-      `uvm_error("DRIVER", "Driver attempted simultaneous read and write")
-    end
-    
-    if (txn.write_en && txn.fifo_full) begin
-      `uvm_error("DRIVER", "Driver attempted write when FIFO is full")
-    end
-    
-    if (txn.read_en && txn.fifo_empty) begin
-      `uvm_error("DRIVER", "Driver attempted read when FIFO is empty")
-    end
-    
-    `uvm_info("DRIVER", $sformatf("Driving transaction: %s", txn.convert2string()), UVM_HIGH)
-  endtask
   
 endclass
+
+// Extern task implementations
+task fifo_driver::run_phase(uvm_run_phase phase);
+  reset();
+  
+  forever begin
+    fifo_transaction txn;
+    seq_item_port.get_next_item(txn);
+    drive(txn);
+    seq_item_port.item_done();
+  end
+endtask
+
+task fifo_driver::reset();
+  `uvm_info("DRIVER", "Resetting FIFO...", UVM_MEDIUM)
+  vif.drv_cb.rst <= 1;
+  vif.drv_cb.write_en <= 0;
+  vif.drv_cb.read_en <= 0;
+  vif.drv_cb.data_in <= 0;
+  repeat(2) @(vif.drv_cb);
+  vif.drv_cb.rst <= 0;
+  @(vif.drv_cb);
+endtask
+
+task fifo_driver::drive(fifo_transaction txn);
+  vif.drv_cb.write_en <= txn.write_en;
+  vif.drv_cb.read_en <= txn.read_en;
+  vif.drv_cb.data_in <= txn.data_in;
+  
+  @(vif.drv_cb);
+  
+  txn.fifo_full = vif.drv_cb.fifo_full;
+  txn.fifo_empty = vif.drv_cb.fifo_empty;
+  
+  // Driver assertions
+  if (txn.write_en && txn.read_en) begin
+    `uvm_error("DRIVER", "Driver attempted simultaneous read and write")
+  end
+  
+  if (txn.write_en && txn.fifo_full) begin
+    `uvm_error("DRIVER", "Driver attempted write when FIFO is full")
+  end
+  
+  if (txn.read_en && txn.fifo_empty) begin
+    `uvm_error("DRIVER", "Driver attempted read when FIFO is empty")
+  end
+  
+  `uvm_info("DRIVER", $sformatf("Driving transaction: %s", txn.convert2string()), UVM_HIGH)
+endtask
