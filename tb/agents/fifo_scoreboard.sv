@@ -68,10 +68,35 @@ class fifo_scoreboard extends uvm_scoreboard;
       end
     end
   endtask
-  
+
+  function void end_of_elaboration_phase(uvm_end_of_elaboration_phase phase);
+    super.end_of_elaboration_phase(phase);
+    `uvm_info("SB", "fifo_scoreboard end_of_elaboration_phase", UVM_LOW)
+  endfunction
+
+  function void start_of_simulation_phase(uvm_start_of_simulation_phase phase);
+    super.start_of_simulation_phase(phase);
+    `uvm_info("SB", "fifo_scoreboard start_of_simulation_phase", UVM_LOW)
+  endfunction
+
+  function void extract_phase(uvm_extract_phase phase);
+    super.extract_phase(phase);
+    `uvm_info("SB", "fifo_scoreboard extract_phase", UVM_LOW)
+  endfunction
+
+  function void check_phase(uvm_check_phase phase);
+    super.check_phase(phase);
+    `uvm_info("SB", "fifo_scoreboard check_phase", UVM_LOW)
+  endfunction
+
   function void report_phase(uvm_report_phase phase);
     super.report_phase(phase);
     `uvm_info("SB", $sformatf("Scoreboard Summary: PASS=%0d, FAIL=%0d", pass_count, fail_count), UVM_MEDIUM)
+  endfunction
+
+  function void final_phase(uvm_final_phase phase);
+    super.final_phase(phase);
+    `uvm_info("SB", "fifo_scoreboard final_phase", UVM_LOW)
   endfunction
   
 endclass

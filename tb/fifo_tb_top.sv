@@ -2,11 +2,22 @@
 module top;
   import uvm_pkg::*;
   `include "uvm_macros.svh"
+  `include "fifo_uvm_externs.svh"
   
   parameter WIDTH = 8;
   parameter DEPTH = 4;
   parameter WR_PTR_WR = 8;
   parameter RD_PTR_RD = 8;
+  
+  // Include all test files
+  `include "fifo_transaction.sv"
+  `include "fifo_sequence.sv"
+  `include "fifo_driver.sv"
+  `include "fifo_monitor.sv"
+  `include "fifo_scoreboard.sv"
+  `include "fifo_coverage.sv"
+  `include "fifo_env.sv"
+  `include "fifo_test.sv"
   
   // Clock generation
   bit clk = 0;
@@ -33,16 +44,6 @@ module top;
   );
   
   initial begin
-    // Include all test files
-    `include "fifo_transaction.sv"
-    `include "fifo_sequence.sv"
-    `include "fifo_driver.sv"
-    `include "fifo_monitor.sv"
-    `include "fifo_scoreboard.sv"
-    `include "fifo_coverage.sv"
-    `include "fifo_env.sv"
-    `include "fifo_test.sv"
-    
     // Configure virtual interface
     uvm_config_db #(virtual fifo_if)::set(null, "*", "vif", intf);
     

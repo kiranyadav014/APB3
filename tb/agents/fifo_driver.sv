@@ -24,7 +24,37 @@ class fifo_driver extends uvm_driver #(fifo_transaction);
       seq_item_port.item_done();
     end
   endtask
-  
+
+  function void end_of_elaboration_phase(uvm_end_of_elaboration_phase phase);
+    super.end_of_elaboration_phase(phase);
+    `uvm_info("DRIVER", "fifo_driver end_of_elaboration_phase", UVM_LOW)
+  endfunction
+
+  function void start_of_simulation_phase(uvm_start_of_simulation_phase phase);
+    super.start_of_simulation_phase(phase);
+    `uvm_info("DRIVER", "fifo_driver start_of_simulation_phase", UVM_LOW)
+  endfunction
+
+  function void extract_phase(uvm_extract_phase phase);
+    super.extract_phase(phase);
+    `uvm_info("DRIVER", "fifo_driver extract_phase", UVM_LOW)
+  endfunction
+
+  function void check_phase(uvm_check_phase phase);
+    super.check_phase(phase);
+    `uvm_info("DRIVER", "fifo_driver check_phase", UVM_LOW)
+  endfunction
+
+  function void report_phase(uvm_report_phase phase);
+    super.report_phase(phase);
+    `uvm_info("DRIVER", "fifo_driver report_phase", UVM_LOW)
+  endfunction
+
+  function void final_phase(uvm_final_phase phase);
+    super.final_phase(phase);
+    `uvm_info("DRIVER", "fifo_driver final_phase", UVM_LOW)
+  endfunction
+
   task reset();
     `uvm_info("DRIVER", "Resetting FIFO...", UVM_MEDIUM)
     vif.drv_cb.rst <= 1;
