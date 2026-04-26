@@ -1,0 +1,46 @@
+# Simulation artifacts
+*.log
+*.vcd
+*.wdb
+*.vstf
+transcript
+work/
+simv
+simv.daidir/
+csrc/
+*.key
+*.so
+*.o
+
+# Waveform files
+*.fsdb
+*.vpd
+
+# Coverage files
+*.ucdb
+*.vdb
+
+# Temporary files
+*.tmp
+*.swp
+*.bak
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Build artifacts
+build/
+dist/
+*.exe
+
+# Log files
+logs/
+*.log
