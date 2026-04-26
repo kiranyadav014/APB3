@@ -14,58 +14,66 @@ class fifo_scoreboard extends uvm_scoreboard;
   int pass_count = 0;
   int fail_count = 0;
   
-  function new(string name, uvm_component parent);
-    super.new(name, parent);
-    ap_export = new("ap_export", this);
-    af = new("af", this);
-  endfunction
-  
-  function void build_phase(uvm_build_phase phase);
-    super.build_phase(phase);
-    ap_export.connect(af.analysis_export);
-  endfunction
-  
+  extern function new(string name, uvm_component parent);
+  extern function void build_phase(uvm_build_phase phase);
   extern task run_phase(uvm_run_phase phase);
-
-  function void end_of_elaboration_phase(uvm_end_of_elaboration_phase phase);
-    super.end_of_elaboration_phase(phase);
-    `uvm_info("SB", "fifo_scoreboard end_of_elaboration_phase", UVM_LOW)
-  endfunction
-
-  function void start_of_simulation_phase(uvm_start_of_simulation_phase phase);
-    super.start_of_simulation_phase(phase);
-    `uvm_info("SB", "fifo_scoreboard start_of_simulation_phase", UVM_LOW)
-  endfunction
-
-  function void extract_phase(uvm_extract_phase phase);
-    super.extract_phase(phase);
-    `uvm_info("SB", "fifo_scoreboard extract_phase", UVM_LOW)
-  endfunction
-
-  function void check_phase(uvm_check_phase phase);
-    super.check_phase(phase);
-    `uvm_info("SB", "fifo_scoreboard check_phase", UVM_LOW)
-  endfunction
-
-  function void report_phase(uvm_report_phase phase);
-    super.report_phase(phase);
-    `uvm_info("SB", $sformatf("Scoreboard Summary: PASS=%0d, FAIL=%0d", pass_count, fail_count), UVM_MEDIUM)
-  endfunction
-
-  function void final_phase(uvm_final_phase phase);
-    super.final_phase(phase);
-    `uvm_info("SB", "fifo_scoreboard final_phase", UVM_LOW)
-    
-    // Assertions for scoreboard final state
-    assert (pass_count >= 0) else `uvm_error("SB", "Pass count is negative")
-    assert (fail_count >= 0) else `uvm_error("SB", "Fail count is negative")
-    assert (wr_ptr_sb >= 0 && wr_ptr_sb <= DEPTH) else `uvm_error("SB", "Write pointer out of bounds")
-    assert (rd_ptr_sb >= 0 && rd_ptr_sb <= DEPTH) else `uvm_error("SB", "Read pointer out of bounds")
-  endfunction
+  extern function void end_of_elaboration_phase(uvm_end_of_elaboration_phase phase);
+  extern function void start_of_simulation_phase(uvm_start_of_simulation_phase phase);
+  extern function void extract_phase(uvm_extract_phase phase);
+  extern function void check_phase(uvm_check_phase phase);
+  extern function void report_phase(uvm_report_phase phase);
+  extern function void final_phase(uvm_final_phase phase);
   
 endclass
 
-// Extern task implementation
+// Extern implementations
+function fifo_scoreboard::new(string name, uvm_component parent);
+  super.new(name, parent);
+  ap_export = new("ap_export", this);
+  af = new("af", this);
+endfunction
+
+function void fifo_scoreboard::build_phase(uvm_build_phase phase);
+  super.build_phase(phase);
+  ap_export.connect(af.analysis_export);
+endfunction
+
+function void fifo_scoreboard::end_of_elaboration_phase(uvm_end_of_elaboration_phase phase);
+  super.end_of_elaboration_phase(phase);
+  `uvm_info("SB", "fifo_scoreboard end_of_elaboration_phase", UVM_LOW)
+endfunction
+
+function void fifo_scoreboard::start_of_simulation_phase(uvm_start_of_simulation_phase phase);
+  super.start_of_simulation_phase(phase);
+  `uvm_info("SB", "fifo_scoreboard start_of_simulation_phase", UVM_LOW)
+endfunction
+
+function void fifo_scoreboard::extract_phase(uvm_extract_phase phase);
+  super.extract_phase(phase);
+  `uvm_info("SB", "fifo_scoreboard extract_phase", UVM_LOW)
+endfunction
+
+function void fifo_scoreboard::check_phase(uvm_check_phase phase);
+  super.check_phase(phase);
+  `uvm_info("SB", "fifo_scoreboard check_phase", UVM_LOW)
+endfunction
+
+function void fifo_scoreboard::report_phase(uvm_report_phase phase);
+  super.report_phase(phase);
+  `uvm_info("SB", $sformatf("Scoreboard Summary: PASS=%0d, FAIL=%0d", pass_count, fail_count), UVM_MEDIUM)
+endfunction
+
+function void fifo_scoreboard::final_phase(uvm_final_phase phase);
+  super.final_phase(phase);
+  `uvm_info("SB", "fifo_scoreboard final_phase", UVM_LOW)
+  
+  // Assertions for scoreboard final state
+  assert (pass_count >= 0) else `uvm_error("SB", "Pass count is negative")
+  assert (fail_count >= 0) else `uvm_error("SB", "Fail count is negative")
+  assert (wr_ptr_sb >= 0 && wr_ptr_sb <= DEPTH) else `uvm_error("SB", "Write pointer out of bounds")
+  assert (rd_ptr_sb >= 0 && rd_ptr_sb <= DEPTH) else `uvm_error("SB", "Read pointer out of bounds")
+endfunction
+
 task fifo_scoreboard::run_phase(uvm_run_phase phase);
   fifo_transaction txn;
   

@@ -4,15 +4,47 @@ class base_sequence extends uvm_sequence #(fifo_transaction);
   
   int num_transactions = 10;
   
-  function new(string name = "base_sequence");
-    super.new(name);
-  endfunction
-  
+  extern function new(string name = "base_sequence");
   extern task body();
   
 endclass
 
-// Extern task implementation
+// Write-only sequence
+class write_sequence extends uvm_sequence #(fifo_transaction);
+  `uvm_object_utils(write_sequence)
+  
+  int num_transactions = 4;
+  
+  extern function new(string name = "write_sequence");
+  extern task body();
+  
+endclass
+
+// Read-only sequence
+class read_sequence extends uvm_sequence #(fifo_transaction);
+  `uvm_object_utils(read_sequence)
+  
+  int num_transactions = 4;
+  
+  extern function new(string name = "read_sequence");
+  extern task body();
+  
+endclass
+
+// Write then Read sequence
+class write_then_read_sequence extends uvm_sequence #(fifo_transaction);
+  `uvm_object_utils(write_then_read_sequence)
+  
+  extern function new(string name = "write_then_read_sequence");
+  extern task body();
+  
+endclass
+
+// Extern implementations
+function base_sequence::new(string name = "base_sequence");
+  super.new(name);
+endfunction
+
 task base_sequence::body();
   fifo_transaction txn;
   
@@ -24,21 +56,10 @@ task base_sequence::body();
   end
 endtask
 
-// Write-only sequence
-class write_sequence extends uvm_sequence #(fifo_transaction);
-  `uvm_object_utils(write_sequence)
-  
-  int num_transactions = 4;
-  
-  function new(string name = "write_sequence");
-    super.new(name);
-  endfunction
-  
-  extern task body();
-  
-endclass
+function write_sequence::new(string name = "write_sequence");
+  super.new(name);
+endfunction
 
-// Extern task implementation
 task write_sequence::body();
   fifo_transaction txn;
   
@@ -50,21 +71,10 @@ task write_sequence::body();
   end
 endtask
 
-// Read-only sequence
-class read_sequence extends uvm_sequence #(fifo_transaction);
-  `uvm_object_utils(read_sequence)
-  
-  int num_transactions = 4;
-  
-  function new(string name = "read_sequence");
-    super.new(name);
-  endfunction
-  
-  extern task body();
-  
-endclass
+function read_sequence::new(string name = "read_sequence");
+  super.new(name);
+endfunction
 
-// Extern task implementation
 task read_sequence::body();
   fifo_transaction txn;
   
@@ -76,19 +86,10 @@ task read_sequence::body();
   end
 endtask
 
-// Write then Read sequence
-class write_then_read_sequence extends uvm_sequence #(fifo_transaction);
-  `uvm_object_utils(write_then_read_sequence)
-  
-  function new(string name = "write_then_read_sequence");
-    super.new(name);
-  endfunction
-  
-  extern task body();
-  
-endclass
+function write_then_read_sequence::new(string name = "write_then_read_sequence");
+  super.new(name);
+endfunction
 
-// Extern task implementation
 task write_then_read_sequence::body();
   fifo_transaction txn;
   write_sequence ws = write_sequence::type_id::create("ws");

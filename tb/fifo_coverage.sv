@@ -5,46 +5,15 @@ class fifo_coverage extends uvm_subscriber #(fifo_transaction);
   fifo_transaction txn;
   fifo_cov cov;
 
-  function new(string name, uvm_component parent);
-    super.new(name, parent);
-  endfunction
-
-  function void build_phase(uvm_build_phase phase);
-    super.build_phase(phase);
-    cov = new("cov");
-  endfunction
-
+  extern function new(string name, uvm_component parent);
+  extern function void build_phase(uvm_build_phase phase);
   extern function void write(fifo_transaction t);
-
-  function void end_of_elaboration_phase(uvm_end_of_elaboration_phase phase);
-    super.end_of_elaboration_phase(phase);
-    `uvm_info("COVERAGE", "fifo_coverage end_of_elaboration_phase", UVM_LOW)
-  endfunction
-
-  function void start_of_simulation_phase(uvm_start_of_simulation_phase phase);
-    super.start_of_simulation_phase(phase);
-    `uvm_info("COVERAGE", "fifo_coverage start_of_simulation_phase", UVM_LOW)
-  endfunction
-
-  function void extract_phase(uvm_extract_phase phase);
-    super.extract_phase(phase);
-    `uvm_info("COVERAGE", "fifo_coverage extract_phase", UVM_LOW)
-  endfunction
-
-  function void check_phase(uvm_check_phase phase);
-    super.check_phase(phase);
-    `uvm_info("COVERAGE", "fifo_coverage check_phase", UVM_LOW)
-  endfunction
-
-  function void report_phase(uvm_report_phase phase);
-    super.report_phase(phase);
-    `uvm_info("COVERAGE", "fifo_coverage report_phase", UVM_LOW)
-  endfunction
-
-  function void final_phase(uvm_final_phase phase);
-    super.final_phase(phase);
-    `uvm_info("COVERAGE", "fifo_coverage final_phase", UVM_LOW)
-  endfunction
+  extern function void end_of_elaboration_phase(uvm_end_of_elaboration_phase phase);
+  extern function void start_of_simulation_phase(uvm_start_of_simulation_phase phase);
+  extern function void extract_phase(uvm_extract_phase phase);
+  extern function void check_phase(uvm_check_phase phase);
+  extern function void report_phase(uvm_report_phase phase);
+  extern function void final_phase(uvm_final_phase phase);
 
   covergroup fifo_cov;
     write_en_cp : coverpoint txn.write_en {
@@ -63,8 +32,47 @@ class fifo_coverage extends uvm_subscriber #(fifo_transaction);
 
 endclass
 
-// Extern function implementation
+// Extern implementations
+function fifo_coverage::new(string name, uvm_component parent);
+  super.new(name, parent);
+endfunction
+
+function void fifo_coverage::build_phase(uvm_build_phase phase);
+  super.build_phase(phase);
+  cov = new("cov");
+endfunction
+
 function void fifo_coverage::write(fifo_transaction t);
   txn = t;
   cov.sample();
+endfunction
+
+function void fifo_coverage::end_of_elaboration_phase(uvm_end_of_elaboration_phase phase);
+  super.end_of_elaboration_phase(phase);
+  `uvm_info("COVERAGE", "fifo_coverage end_of_elaboration_phase", UVM_LOW)
+endfunction
+
+function void fifo_coverage::start_of_simulation_phase(uvm_start_of_simulation_phase phase);
+  super.start_of_simulation_phase(phase);
+  `uvm_info("COVERAGE", "fifo_coverage start_of_simulation_phase", UVM_LOW)
+endfunction
+
+function void fifo_coverage::extract_phase(uvm_extract_phase phase);
+  super.extract_phase(phase);
+  `uvm_info("COVERAGE", "fifo_coverage extract_phase", UVM_LOW)
+endfunction
+
+function void fifo_coverage::check_phase(uvm_check_phase phase);
+  super.check_phase(phase);
+  `uvm_info("COVERAGE", "fifo_coverage check_phase", UVM_LOW)
+endfunction
+
+function void fifo_coverage::report_phase(uvm_report_phase phase);
+  super.report_phase(phase);
+  `uvm_info("COVERAGE", "fifo_coverage report_phase", UVM_LOW)
+endfunction
+
+function void fifo_coverage::final_phase(uvm_final_phase phase);
+  super.final_phase(phase);
+  `uvm_info("COVERAGE", "fifo_coverage final_phase", UVM_LOW)
 endfunction
