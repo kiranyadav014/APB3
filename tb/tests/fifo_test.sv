@@ -17,6 +17,31 @@ class base_test extends uvm_test;
     super.end_of_elaboration_phase(phase);
     uvm_top.print_topology();
   endfunction
+
+  function void start_of_simulation_phase(uvm_start_of_simulation_phase phase);
+    super.start_of_simulation_phase(phase);
+    `uvm_info("TEST", "base_test start_of_simulation_phase", UVM_LOW)
+  endfunction
+
+  function void extract_phase(uvm_extract_phase phase);
+    super.extract_phase(phase);
+    `uvm_info("TEST", "base_test extract_phase", UVM_LOW)
+  endfunction
+
+  function void check_phase(uvm_check_phase phase);
+    super.check_phase(phase);
+    `uvm_info("TEST", "base_test check_phase", UVM_LOW)
+  endfunction
+
+  function void report_phase(uvm_report_phase phase);
+    super.report_phase(phase);
+    `uvm_info("TEST", "base_test report_phase", UVM_LOW)
+  endfunction
+
+  function void final_phase(uvm_final_phase phase);
+    super.final_phase(phase);
+    `uvm_info("TEST", "base_test final_phase", UVM_LOW)
+  endfunction
   
 endclass
 
