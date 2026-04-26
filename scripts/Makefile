@@ -6,7 +6,8 @@ SIM = vsim
 # Source files
 SOURCES = rtl/sync_fifo.sv \
           tb/fifo_if.sv \
-          tb/fifo_tb_top.sv
+          tb/fifo_tb_top.sv \
+          tb/fifo_coverage.sv
 
 # Test name (can be overridden from command line)
 TEST ?= random_test

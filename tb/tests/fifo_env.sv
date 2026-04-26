@@ -4,6 +4,7 @@ class fifo_env extends uvm_env;
   
   fifo_driver drv;
   fifo_monitor mon;
+  fifo_coverage cov;
   fifo_scoreboard sb;
   uvm_sequencer #(fifo_transaction) seqr;
   
@@ -16,6 +17,7 @@ class fifo_env extends uvm_env;
     
     drv = fifo_driver::type_id::create("drv", this);
     mon = fifo_monitor::type_id::create("mon", this);
+    cov = fifo_coverage::type_id::create("cov", this);
     sb = fifo_scoreboard::type_id::create("sb", this);
     seqr = uvm_sequencer #(fifo_transaction)::type_id::create("seqr", this);
   endfunction
@@ -24,6 +26,7 @@ class fifo_env extends uvm_env;
     super.connect_phase(phase);
     
     drv.seq_item_port.connect(seqr.seq_item_export);
+    mon.ap.connect(cov.analysis_export);
     mon.ap.connect(sb.ap_export);
   endfunction
   
