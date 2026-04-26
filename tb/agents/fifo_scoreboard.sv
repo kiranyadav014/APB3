@@ -97,6 +97,12 @@ class fifo_scoreboard extends uvm_scoreboard;
   function void final_phase(uvm_final_phase phase);
     super.final_phase(phase);
     `uvm_info("SB", "fifo_scoreboard final_phase", UVM_LOW)
+    
+    // Assertions for scoreboard final state
+    assert (pass_count >= 0) else `uvm_error("SB", "Pass count is negative")
+    assert (fail_count >= 0) else `uvm_error("SB", "Fail count is negative")
+    assert (wr_ptr_sb >= 0 && wr_ptr_sb <= DEPTH) else `uvm_error("SB", "Write pointer out of bounds")
+    assert (rd_ptr_sb >= 0 && rd_ptr_sb <= DEPTH) else `uvm_error("SB", "Read pointer out of bounds")
   endfunction
   
 endclass

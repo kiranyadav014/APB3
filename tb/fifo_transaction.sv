@@ -26,6 +26,10 @@ class fifo_transaction extends uvm_sequence_item;
   
   function void post_randomize();
     super.post_randomize();
+    
+    // Transaction assertions
+    assert (!(write_en && read_en)) else `uvm_error("TRANSACTION", "Transaction has both write_en and read_en set")
+    assert (write_en || read_en || (!write_en && !read_en)) else `uvm_error("TRANSACTION", "Invalid transaction state")
   endfunction
   
   function string convert2string();

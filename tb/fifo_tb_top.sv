@@ -16,6 +16,7 @@ module top;
   `include "fifo_monitor.sv"
   `include "fifo_scoreboard.sv"
   `include "fifo_coverage.sv"
+  `include "fifo_assertions.sv"
   `include "fifo_env.sv"
   `include "fifo_test.sv"
   
@@ -37,6 +38,18 @@ module top;
     .rst(intf.rst),
     .read_en(intf.read_en),
     .write_en(intf.write_en),
+    .data_in(intf.data_in),
+    .data_out(intf.data_out),
+    .fifo_full(intf.fifo_full),
+    .fifo_empty(intf.fifo_empty)
+  );
+  
+  // Assertions instantiation
+  fifo_assertions assertions_inst (
+    .clk(clk),
+    .rst(intf.rst),
+    .write_en(intf.write_en),
+    .read_en(intf.read_en),
     .data_in(intf.data_in),
     .data_out(intf.data_out),
     .fifo_full(intf.fifo_full),

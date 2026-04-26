@@ -76,6 +76,19 @@ class fifo_driver extends uvm_driver #(fifo_transaction);
     txn.fifo_full = vif.drv_cb.fifo_full;
     txn.fifo_empty = vif.drv_cb.fifo_empty;
     
+    // Driver assertions
+    if (txn.write_en && txn.read_en) begin
+      `uvm_error("DRIVER", "Driver attempted simultaneous read and write")
+    end
+    
+    if (txn.write_en && txn.fifo_full) begin
+      `uvm_error("DRIVER", "Driver attempted write when FIFO is full")
+    end
+    
+    if (txn.read_en && txn.fifo_empty) begin
+      `uvm_error("DRIVER", "Driver attempted read when FIFO is empty")
+    end
+    
     `uvm_info("DRIVER", $sformatf("Driving transaction: %s", txn.convert2string()), UVM_HIGH)
   endtask
   

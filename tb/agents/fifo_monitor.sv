@@ -30,6 +30,23 @@ class fifo_monitor extends uvm_monitor;
       txn.fifo_full = vif.mon_cb.fifo_full;
       txn.fifo_empty = vif.mon_cb.fifo_empty;
       
+      // Monitor assertions
+      if (txn.fifo_full && txn.fifo_empty) begin
+        `uvm_error("MONITOR", "Monitor detected FIFO both full and empty")
+      end
+      
+      if (txn.write_en && txn.fifo_full) begin
+        `uvm_error("MONITOR", "Monitor detected write when FIFO is full")
+      end
+      
+      if (txn.read_en && txn.fifo_empty) begin
+        `uvm_error("MONITOR", "Monitor detected read when FIFO is empty")
+      end
+      
+      if (txn.write_en && txn.read_en) begin
+        `uvm_error("MONITOR", "Monitor detected simultaneous read and write")
+      end
+      
       `uvm_info("MONITOR", $sformatf("Monitored transaction: %s", txn.convert2string()), UVM_HIGH)
       ap.write(txn);
     end
